@@ -1,10 +1,9 @@
 ﻿###############################################################################################################
-# Language     :  PowerShell
-# Description  :  Powershell WPF - Add/Remove Items From List
-$ScriptVersion = 1.0.0
+#Description  :  Powershell WPF - Add/Remove Items From List
+#Author : Florian Clisson
 ###############################################################################################################
 
-#Xamal loader section has been wrote by stephen owen :
+#Xamal Loader section has been wrote by stephen owen :
 #https://github.com/1RedOne/PowerShell_XAML/
 
 #ERASE ALL THIS AND PUT XAML BELOW between the @" "@
@@ -41,8 +40,6 @@ $inputXML = @"
             </TabItem>
             <TabItem Header="?">
                 
-
-
             </TabItem>
         </TabControl>
     </Grid>
@@ -77,6 +74,12 @@ Function Get-FormVariables {
 
 #Display WPF Variable (You can comment this function once script finished)
 Get-FormVariables
+
+
+#===========================================================================
+# Functions
+#===========================================================================
+
 
 function get-ListBoxCurrentData($Output) {
 
@@ -118,8 +121,6 @@ function Sync-ListBox($RemoveFromListbox, $AddToListbox) {
     #Add items to choice list
     ListBox -InputData $SelectedItems -Output $AddToListbox
 }
-#function Get
-
 
 #Add to available items list
 $Values = @("Hello","World")
@@ -128,22 +129,21 @@ $Values | ForEach-Object {
     ListBox -InputData "$_" -Output $WPFlistbox_AvailableItems
 }
 
-#region Events
+#===========================================================================
+# Events
+#===========================================================================
 
-    #Sync-ListBox
+$WPFButton_AddItems.Add_Click( {
+    
+        Sync-ListBox -RemoveFromListbox $WPFlistbox_AvailableItems -AddToListbox $WPFlistbox_SelectedItems
+})
 
-        $WPFButton_AddItems.Add_Click( {
-            
-                Sync-ListBox -RemoveFromListbox $WPFlistbox_AvailableItems -AddToListbox $WPFlistbox_SelectedItems
-        })
+$WPFButton_RemoveItems.Add_Click( {
+        
+        Sync-ListBox -RemoveFromListbox $WPFlistbox_SelectedItems -AddToListbox $WPFlistbox_AvailableItems
+})
 
-        $WPFButton_RemoveItems.Add_Click( {
-                
-                Sync-ListBox -RemoveFromListbox $WPFlistbox_SelectedItems -AddToListbox $WPFlistbox_AvailableItems
-        })
 
-    #endregion 
 
-#endregion 
-
+#Display powershell GUI
 $Form.ShowDialog() | out-null
